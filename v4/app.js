@@ -3,6 +3,7 @@ var express     = require("express"),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
     Campground  = require("./models/campground"),
+    Comment     = require("./models/comment"),
     seedDB      = require("./seeds")
     
 mongoose.connect("mongodb://localhost/yelp_camp_v3");
@@ -75,8 +76,34 @@ app.get("/campgrounds/:id/comments/new", function(req, res){
         } else {
              res.render("comments/new", {campground: campground});
         }
-    })
+    });
 });
+
+app.post("/campgrounds/:id/comments", function(req, res){
+    //lookup campground using ID
+    Campground.findById(req.params.id, function(err, campground) {
+        if(err){
+            console.log(err);
+            res.redirect("/campgrounds");
+        } else {
+            Comment.create(req.body.comment, function(err, comment){
+                if(err){
+                    console.log(err);
+                } else {
+                    campground.comments.push(comment);
+                    campground.save();
+                    res.redirect('/campgrounds/' + campground._id);
+                }
+            });
+            //create new comments
+            // connect new comment to campground
+             //redirect campground show page
+        }
+    })
+    //create new comments
+    // connect new comment to campground
+    //redirect campground show page
+})
 
 app.listen(process.env.PORT, process.env.IP, function(){
    console.log("The YelpCamp Server Has Started, sir.");
