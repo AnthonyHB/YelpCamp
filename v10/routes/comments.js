@@ -65,6 +65,12 @@ router.put("/:comment_id", function(req, res){
     });
 });
 
+// COMMENT DESTROY ROUTE
+router.delete("/:comment_id", function(req, res){
+    //findbyidandremove
+    res.send("ya gone");
+})
+
 //middleware
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
