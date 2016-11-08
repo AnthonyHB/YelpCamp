@@ -60,7 +60,12 @@ router.get("/:id", function(req, res){
 // EDIT CAMPGROUND ROUTE
 router.get("/:id/edit", middleware.checkCampgroundOwnership, function(req, res) {
     Campground.findById(req.params.id, function(err, foundCampground){
-        res.render("campgrounds/edit", {campground: foundCampground});
+        if(err){
+            req.flash("error", "Something went wrong!");
+            res.redirect("back");
+        } else {
+            res.render("campgrounds/edit", {campground: foundCampground});
+        }
     });
 });
 
@@ -71,7 +76,7 @@ router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
         if(err){
             res.redirect("/campgrounds");
         } else {
-            res.redirect("/campgrounds/" + req.params.id)
+            res.redirect("/campgrounds/" + req.params.id);
         }
     });
     // redirect somewhere (show page)
